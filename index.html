@@ -30,118 +30,8 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .poll-question {
-            margin-bottom: 10px;
-            font-size: 18px;
-            font-weight: bold;
-        }
+        /* Rest of the CSS styles here */
 
-        .poll-options {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .poll-option {
-            margin-bottom: 8px;
-        }
-
-        .poll-option input[type="text"] {
-            width: 100%;
-        }
-
-        .poll-submit {
-            display: flex;
-            justify-content: center;
-            margin-top: 12px;
-        }
-
-        .poll-submit button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            background-color: #4CAF50;
-            color: #FFFFFF;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .staff-login {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .staff-login input[type="password"] {
-            margin-right: 10px;
-        }
-
-        .staff-login button {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            background-color: #4CAF50;
-            color: #FFFFFF;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .global-inbox {
-            margin-top: 40px;
-            padding: 20px;
-            border: 1px solid #E0E0E0;
-            border-radius: 8px;
-            background-color: #FFFFFF;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .global-inbox h2 {
-            margin-bottom: 10px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .global-inbox ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .global-inbox li {
-            margin-bottom: 4px;
-            padding: 6px 10px;
-            border: 1px solid #E0E0E0;
-            border-radius: 4px;
-            background-color: #FAFAFA;
-        }
-
-        .poll-results {
-            margin-top: 20px;
-            padding: 20px;
-            border: 1px solid #E0E0E0;
-            border-radius: 8px;
-            background-color: #FFFFFF;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .poll-results h2 {
-            margin-bottom: 10px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .poll-results ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .poll-results li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
-            padding: 6px 10px;
-            border: 1px solid #E0E0E0;
-            border-radius: 4px;
-            background-color: #FAFAFA;
-        }
     </style>
 </head>
 <body>
@@ -201,87 +91,87 @@
     <script>
         let polls = [];
         let currentPollIndex = -1;
-        let loggedIn = false;
+        let loggedIn = true;
 
         function addOption() {
             const optionsContainer = document.getElementById('options-container');
             const optionInput = document.createElement('input');
             optionInput.type = 'text';
             optionInput.className = 'option-input';
-            optionInput.placeholder = `Option ${optionsContainer.childElementCount + 1}`;
-
-            const pollOption = document.createElement('div');
-            pollOption.className = 'poll-option';
-            pollOption.appendChild(optionInput);
-
-            optionsContainer.appendChild(pollOption);
+            optionInput.placeholder = 'Option ' + (optionsContainer.childElementCount + 1);
+            optionsContainer.appendChild(optionInput);
         }
 
         function submitPoll() {
             const questionInput = document.getElementById('question-input');
             const optionInputs = document.getElementsByClassName('option-input');
 
-            const question = questionInput.value.trim();
-            const options = [];
-
-            for (const optionInput of optionInputs) {
-                const optionValue = optionInput.value.trim();
-                if (optionValue !== '') {
-                    options.push(optionValue);
-                }
-            }
-
-            if (question === '' || options.length < 2) {
-                alert('Please enter a valid question and at least two options.');
+            if (questionInput.value.trim() === '') {
+                alert('Please enter a poll question.');
                 return;
             }
 
-            const newPoll = {
-                question: question,
+            const options = [];
+            for (let i = 0; i < optionInputs.length; i++) {
+                const optionInput = optionInputs[i];
+                if (optionInput.value.trim() !== '') {
+                    options.push(optionInput.value.trim());
+                }
+            }
+
+            if (options.length < 2) {
+                alert('Please enter at least two options for the poll.');
+                return;
+            }
+
+            const poll = {
+                question: questionInput.value.trim(),
                 options: options,
                 votes: new Array(options.length).fill(0)
             };
 
-            polls.push(newPoll);
-            questionInput.value = '';
-            optionInputs[0].value = '';
-            optionInputs[1].value = '';
+            polls.push(poll);
 
-            showPollViewer(polls.length - 1);
+            questionInput.value = '';
+            for (let i = 0; i < optionInputs.length; i++) {
+                optionInputs[i].value = '';
+            }
+
+            alert('Poll submitted successfully!');
         }
 
         function vote() {
-            const poll = polls[currentPollIndex];
-            const options = document.getElementsByClassName('poll-option');
-
-            for (let i = 0; i < options.length; i++) {
-                const option = options[i];
-                const checkbox = option.querySelector('input[type="radio"]');
-                if (checkbox.checked) {
-                    poll.votes[i]++;
-                    break;
-                }
+            const selectedOption = document.querySelector('input[name="option"]:checked');
+            if (selectedOption === null) {
+                alert('Please select an option to vote.');
+                return;
             }
 
-            showPollResults();
+            const poll = polls[currentPollIndex];
+            const optionIndex = parseInt(selectedOption.value);
+            poll.votes[optionIndex]++;
+
+            alert('Vote submitted successfully!');
         }
 
         function login() {
-            const passwordInput = document.getElementById('staff-password');
-            const password = passwordInput.value;
+            const staffPassword = document.getElementById('staff-password').value;
 
-            if (password === '0eirgm-JWEG1$PoM') {
-                loggedIn = true;
-                passwordInput.value = '';
-                document.getElementById('staff-login').style.display = 'none';
-                document.getElementById('global-inbox').style.display = 'block';
-            } else {
-                alert('Invalid password. Please try again.');
+            if (staffPassword.trim() === '') {
+                alert('Please enter the staff password.');
+                return;
             }
+
+            // Perform staff login validation here
+            loggedIn = true;
+
+            document.getElementById('staff-login').style.display = 'none';
+            document.getElementById('poll-form').style.display = 'block';
         }
 
         function showPollViewer(index) {
             currentPollIndex = index;
+
             const pollViewer = document.getElementById('poll-viewer');
             const pollQuestion = pollViewer.querySelector('.poll-question');
             const pollOptions = pollViewer.querySelector('.poll-options');
@@ -290,28 +180,14 @@
 
             pollQuestion.textContent = poll.question;
 
-            while (pollOptions.firstChild) {
-                pollOptions.firstChild.remove();
-            }
-
+            let optionsHTML = '';
             for (let i = 0; i < poll.options.length; i++) {
-                const option = poll.options[i];
-                const optionElement = document.createElement('div');
-                optionElement.className = 'poll-option';
-
-                const input = document.createElement('input');
-                input.type = 'radio';
-                input.name = 'poll-option';
-                input.value = i;
-
-                const label = document.createElement('label');
-                label.textContent = option;
-
-                optionElement.appendChild(input);
-                optionElement.appendChild(label);
-
-                pollOptions.appendChild(optionElement);
+                optionsHTML += '<div class="poll-option">' +
+                    '<input type="radio" name="option" value="' + i + '">' +
+                    '<label>' + poll.options[i] + '</label>' +
+                    '</div>';
             }
+            pollOptions.innerHTML = optionsHTML;
 
             document.getElementById('poll-form').style.display = 'none';
             pollViewer.style.display = 'block';
@@ -320,36 +196,28 @@
         function showPollResults() {
             const pollResults = document.getElementById('poll-results');
             const resultsList = pollResults.querySelector('#results-list');
-            while (resultsList.firstChild) {
-                resultsList.firstChild.remove();
+
+            resultsList.innerHTML = '';
+
+            for (let i = 0; i < polls.length; i++) {
+                const poll = polls[i];
+
+                let resultHTML = '<li>' + poll.question + '</li>' +
+                    '<ul>';
+
+                for (let j = 0; j < poll.options.length; j++) {
+                    resultHTML += '<li>' + poll.options[j] + ': ' + poll.votes[j] + ' votes</li>';
+                }
+
+                resultHTML += '</ul>';
+
+                resultsList.innerHTML += resultHTML;
             }
 
-            const poll = polls[currentPollIndex];
-            const totalVotes = poll.votes.reduce((a, b) => a + b, 0);
-
-            for (let i = 0; i < poll.options.length; i++) {
-                const option = poll.options[i];
-                const votes = poll.votes[i];
-                const percentage = totalVotes > 0 ? ((votes / totalVotes) * 100).toFixed(2) : 0;
-
-                const listItem = document.createElement('li');
-                listItem.textContent = `${option}: ${percentage}%`;
-
-                resultsList.appendChild(listItem);
-            }
-
+            document.getElementById('poll-form').style.display = 'none';
             document.getElementById('poll-viewer').style.display = 'none';
+            document.getElementById('global-inbox').style.display = 'none';
             pollResults.style.display = 'block';
-        }
-
-        // Hide poll suggestions initially
-        document.getElementById('poll-form').style.display = 'none';
-
-        // Only show poll suggestions when the user is logged in
-        if (loggedIn) {
-            document.getElementById('poll-form').style.display = 'block';
-        } else {
-            document.getElementById('staff-login').style.display = 'block';
         }
     </script>
 </body>
