@@ -84,64 +84,8 @@
       const correctPassword = '0eirgm-JWEG1$PoM';
 
       if (password === correctPassword) {
-        document.getElementById('password-form').style.display = 'none';
-        document.getElementById('private-content').style.display = 'block';
+        window.location.href = 'private.html';
       }
-    }
-
-    // Example poll data
-    const pollSuggestions = [
-      { id: 1, question: 'What is your favorite color?' },
-      { id: 2, question: 'Which is your favorite movie?' },
-      { id: 3, question: 'What is your preferred programming language?' }
-    ];
-
-    const currentPolls = [
-      { id: 1, question: 'Do you prefer dogs or cats?' },
-      { id: 2, question: 'What is your favorite food?' },
-      { id: 3, question: 'Are you an early bird or a night owl?' }
-    ];
-
-    // Function to display poll suggestions
-    function displayPollSuggestions() {
-      const pollSuggestionsContainer = document.getElementById('poll-suggestions-container');
-      pollSuggestionsContainer.innerHTML = '';
-
-      pollSuggestions.forEach(poll => {
-        const pollCard = document.createElement('div');
-        pollCard.classList.add('poll-card');
-
-        const pollTitle = document.createElement('h3');
-        pollTitle.textContent = poll.question;
-
-        const pollButton = document.createElement('button');
-        pollButton.textContent = 'Vote';
-
-        pollCard.appendChild(pollTitle);
-        pollCard.appendChild(pollButton);
-        pollSuggestionsContainer.appendChild(pollCard);
-      });
-    }
-
-    // Function to display current polls
-    function displayCurrentPolls() {
-      const currentPollsContainer = document.getElementById('current-polls-container');
-      currentPollsContainer.innerHTML = '';
-
-      currentPolls.forEach(poll => {
-        const pollCard = document.createElement('div');
-        pollCard.classList.add('poll-card');
-
-        const pollTitle = document.createElement('h3');
-        pollTitle.textContent = poll.question;
-
-        const pollButton = document.createElement('button');
-        pollButton.textContent = 'Vote';
-
-        pollCard.appendChild(pollTitle);
-        pollCard.appendChild(pollButton);
-        currentPollsContainer.appendChild(pollCard);
-      });
     }
 
     // Function to handle poll suggestion form submission
@@ -150,21 +94,14 @@
       const suggestionInput = document.getElementById('suggestion-input');
       const suggestion = suggestionInput.value;
 
-      // Add the suggestion to the poll suggestions array
-      pollSuggestions.push({ id: pollSuggestions.length + 1, question: suggestion });
+      // You can implement the logic to save the poll suggestion here
 
       // Clear the input field
       suggestionInput.value = '';
-
-      // Refresh the poll suggestions
-      displayPollSuggestions();
     }
 
     // Initialize the page
     function initializePage() {
-      displayPollSuggestions();
-      displayCurrentPolls();
-
       const suggestionForm = document.getElementById('suggestion-form');
       suggestionForm.addEventListener('submit', submitPollSuggestion);
     }
@@ -182,23 +119,88 @@
       <input type="password" id="password-input" required>
       <button type="submit">Submit</button>
     </form>
+  </div>
 
-    <div id="private-content" style="display: none;">
-      <h2>Poll Suggestions</h2>
-      <ul id="poll-suggestions-container"></ul>
+  <div id="private-content" style="display: none;">
+    <div class="suggestion-form">
+      <h3>Submit a Poll Suggestion</h3>
+      <form id="suggestion-form" onsubmit="submitPollSuggestion(event)">
+        <label for="suggestion-input">Poll Question:</label>
+        <input type="text" id="suggestion-input" required>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
 
-      <div class="suggestion-form">
-        <h3>Submit a Poll Suggestion</h3>
-        <form id="suggestion-form" onsubmit="submitPollSuggestion(event)">
-          <label for="suggestion-input">Poll Question:</label>
-          <input type="text" id="suggestion-input" required>
-          <button type="submit">Submit</button>
-        </form>
-      </div>
+    <div id="poll-suggestions">
+      <h3>Poll Suggestions</h3>
+      <ul id="poll-suggestions-list"></ul>
+    </div>
 
-      <h2>Current Polls</h2>
-      <ul id="current-polls-container"></ul>
+    <div id="current-polls">
+      <h3>Current Polls</h3>
+      <div id="polls-container"></div>
     </div>
   </div>
+
+  <script>
+    // Function to display poll suggestions
+    function displayPollSuggestions(suggestions) {
+      const suggestionList = document.getElementById('poll-suggestions-list');
+
+      // Clear previous suggestions
+      suggestionList.innerHTML = '';
+
+      // Display each suggestion as a list item
+      suggestions.forEach(function(suggestion) {
+        const listItem = document.createElement('li');
+        listItem.textContent = suggestion.question;
+        listItem.classList.add('poll-item');
+        suggestionList.appendChild(listItem);
+      });
+    }
+
+    // Function to display current polls
+    function displayCurrentPolls(polls) {
+      const pollsContainer = document.getElementById('polls-container');
+
+      // Clear previous polls
+      pollsContainer.innerHTML = '';
+
+      // Display each poll as a card
+      polls.forEach(function(poll) {
+        const pollCard = document.createElement('div');
+        pollCard.classList.add('poll-card');
+
+        const pollQuestion = document.createElement('h3');
+        pollQuestion.textContent = poll.question;
+
+        pollCard.appendChild(pollQuestion);
+        pollsContainer.appendChild(pollCard);
+      });
+    }
+
+    // Example poll data
+    const pollSuggestions = [
+      { id: 1, question: 'What is your favorite color?' },
+      { id: 2, question: 'Which is your favorite movie?' },
+      { id: 3, question: 'What is your preferred programming language?' }
+    ];
+
+    const currentPolls = [
+      { id: 1, question: 'Do you prefer dogs or cats?' },
+      { id: 2, question: 'What is your favorite food?' },
+      { id: 3, question: 'Are you an early bird or a night owl?' }
+    ];
+
+    // Run the code when the private page is accessed
+    if (window.location.href.includes('private.html')) {
+      document.getElementById('content').style.display = 'none';
+      document.getElementById('private-content').style.display = 'block';
+
+      // Display the poll suggestions and current polls
+      displayPollSuggestions(pollSuggestions);
+      displayCurrentPolls(currentPolls);
+    }
+  </script>
 </body>
 </html>
