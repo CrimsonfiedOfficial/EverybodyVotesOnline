@@ -1,164 +1,139 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Everybody Votes - Web</title>
-    <style>
-        /* Reset default browser styles */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+  <title>Main Website</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
 
-        /* Apply custom styles */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #F5F5F5;
-        }
+    .poll-suggestions {
+      margin-top: 50px;
+    }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #FFFFFF;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+    .poll-suggestions h2 {
+      font-size: 24px;
+    }
 
-        h1, h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+    .poll-suggestions ul {
+      list-style-type: none;
+      padding: 0;
+    }
 
-        .poll {
-            margin-bottom: 20px;
-            padding: 20px;
-            border: 1px solid #E0E0E0;
-            border-radius: 8px;
-            background-color: #FFFFFF;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+    .poll-suggestions li {
+      margin-bottom: 10px;
+    }
 
-        .poll-question {
-            margin-bottom: 10px;
-            font-size: 18px;
-            font-weight: bold;
-        }
+    .poll-suggestions .poll-title {
+      font-weight: bold;
+    }
 
-        .poll-options {
-            display: flex;
-            flex-direction: column;
-        }
+    .poll-suggestions .poll-description {
+      color: #888;
+    }
 
-        .poll-option {
-            margin-bottom: 8px;
-        }
+    .poll-suggestions .poll-buttons {
+      margin-top: 10px;
+    }
 
-        .poll-option input[type="text"] {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #E0E0E0;
-            border-radius: 4px;
-        }
-
-        .poll-submit {
-            display: flex;
-            justify-content: center;
-            margin-top: 12px;
-        }
-
-        .poll-submit button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            background-color: #4CAF50;
-            color: #FFFFFF;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .poll-results {
-            margin-top: 20px;
-            padding: 20px;
-            border: 1px solid #E0E0E0;
-            border-radius: 8px;
-            background-color: #FFFFFF;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .poll-results h2 {
-            margin-bottom: 10px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .poll-results ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .poll-results li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
-            padding: 6px 10px;
-            border: 1px solid #E0E0E0;
-            border-radius: 4px;
-            background-color: #FAFAFA;
-        }
-
-        /* Responsive Styles */
-        @media (max-width: 600px) {
-            .container {
-                padding: 10px;
-            }
-
-            h1, h2 {
-                font-size: 24px;
-            }
-        }
-    </style>
+    .poll-suggestions .poll-buttons button {
+      padding: 5px 10px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Everybody Votes - Web</h1>
+  <h1>Main Website</h1>
 
-        <div id="poll-form" class="poll">
-            <h2>Poll Question</h2>
-            <div class="poll-options">
-                <div class="poll-option">
-                    <label for="option1">Option 1:</label>
-                    <input type="text" id="option1" name="option1">
-                </div>
-                <div class="poll-option">
-                    <label for="option2">Option 2:</label>
-                    <input type="text" id="option2" name="option2">
-                </div>
-            </div>
-            <div class="poll-submit">
-                <button onclick="submitPoll()">Submit</button>
-            </div>
-        </div>
+  <!-- Password Login Form -->
+  <div id="password-form">
+    <h2>Login</h2>
+    <form onsubmit="validatePassword(event)">
+      <input type="password" id="password-input" placeholder="Enter password" required>
+      <br>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
 
-        <div id="poll-results" class="poll-results">
-            <h2>Poll Results</h2>
-            <ul id="results-list"></ul>
-        </div>
-    </div>
+  <!-- Poll Suggestions Section -->
+  <div id="poll-suggestions" style="display: none;">
+    <h2>Poll Suggestions</h2>
+    <ul id="poll-list"></ul>
+  </div>
 
-    <script>
-        function submitPoll() {
-            const option1 = document.getElementById('option1').value;
-            const option2 = document.getElementById('option2').value;
+  <!-- JavaScript Code -->
+  <script>
+    // Password Validation Function
+    function validatePassword(event) {
+      event.preventDefault();
+      var password = document.getElementById("password-input").value;
+      if (password === "0eirgm-JWEG1$PoM") {
+        // Password is correct, show the poll suggestions section
+        document.getElementById("password-form").style.display = "none";
+        document.getElementById("poll-suggestions").style.display = "block";
+        loadPollSuggestions();
+      } else {
+        // Password is incorrect, display error message
+        alert("Invalid password. Please try again.");
+      }
+    }
 
-            // Process the submitted poll and update the results
-            // ...
-
-            // Clear the input fields
-            document.getElementById('option1').value = '';
-            document.getElementById('option2').value = '';
+    // Load Poll Suggestions
+    function loadPollSuggestions() {
+      // Simulated poll suggestions data
+      var pollSuggestions = [
+        {
+          title: "Poll 1",
+          description: "Description for Poll 1"
+        },
+        {
+          title: "Poll 2",
+          description: "Description for Poll 2"
+        },
+        {
+          title: "Poll 3",
+          description: "Description for Poll 3"
         }
-    </script>
+      ];
+
+      var pollList = document.getElementById("poll-list");
+      pollSuggestions.forEach(function(poll) {
+        var li = document.createElement("li");
+        li.innerHTML = "<span class='poll-title'>" + poll.title + "</span><br>" +
+          "<span class='poll-description'>" + poll.description + "</span><br>" +
+          "<div class='poll-buttons'>" +
+          "<button onclick='approvePoll()'>Approve</button>" +
+          "<button onclick='declinePoll()'>Decline</button>" +
+          "</div>";
+        pollList.appendChild(li);
+      });
+    }
+
+    // Poll Approval Function
+    function approvePoll() {
+      // Logic for approving the poll
+      alert("Poll approved.");
+      // Remove the current poll from the list and load the next poll
+      var pollList = document.getElementById("poll-list");
+      if (pollList.firstChild) {
+        pollList.firstChild.remove();
+      }
+    }
+
+    // Poll Decline Function
+    function declinePoll() {
+      // Logic for declining the poll
+      alert("Poll declined.");
+      // Remove the current poll from the list and load the next poll
+      var pollList = document.getElementById("poll-list");
+      if (pollList.firstChild) {
+        pollList.firstChild.remove();
+      }
+    }
+  </script>
 </body>
 </html>
