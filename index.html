@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Everybody Votes - Web</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F5F5F5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #FFFFFF;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        .poll {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            background-color: #FFFFFF;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .poll-question {
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .poll-options {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .poll-option {
+            margin-bottom: 8px;
+        }
+
+        .poll-option input[type="text"] {
+            width: 100%;
+        }
+
+        .poll-submit {
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        .poll-submit button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: #FFFFFF;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .staff-login {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .staff-login input[type="password"] {
+            margin-right: 10px;
+        }
+
+        .staff-login button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: #FFFFFF;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .global-inbox {
+            margin-top: 40px;
+            padding: 20px;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            background-color: #FFFFFF;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .global-inbox h2 {
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .global-inbox ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .global-inbox li {
+            margin-bottom: 4px;
+            padding: 6px 10px;
+            border: 1px solid #E0E0E0;
+            border-radius: 4px;
+            background-color: #FAFAFA;
+        }
+
+        .poll-results {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            background-color: #FFFFFF;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .poll-results h2 {
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .poll-results ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .poll-results li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+            padding: 6px 10px;
+            border: 1px solid #E0E0E0;
+            border-radius: 4px;
+            background-color: #FAFAFA;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Everybody Votes - Web</h1>
+
+        <div id="poll-form">
+            <h2>Create a New Poll</h2>
+            <input type="text" id="question-input" placeholder="Enter poll question">
+            <div id="options-container">
+                <div class="poll-option">
+                    <input type="text" class="option-input" placeholder="Option 1">
+                </div>
+                <div class="poll-option">
+                    <input type="text" class="option-input" placeholder="Option 2">
+                </div>
+            </div>
+            <button onclick="addOption()">Add Option</button>
+            <div class="poll-submit">
+                <button onclick="submitPoll()">Submit Poll</button>
+            </div>
+        </div>
+
+        <div id="poll-viewer" style="display: none;">
+            <h2>Poll Question</h2>
+            <div class="poll">
+                <p class="poll-question">Loading...</p>
+                <div class="poll-options">
+                    <p>Loading options...</p>
+                </div>
+                <div class="poll-submit">
+                    <button onclick="vote()">Vote</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="staff-login" id="staff-login" style="display: none;">
+            <input type="password" id="staff-password" placeholder="Enter staff password">
+            <button onclick="login()">Login</button>
+        </div>
+
+        <div class="global-inbox" id="global-inbox" style="display: none;">
+            <h2>Global Inbox</h2>
+            <ul id="inbox-list">
+                <li>Loading polls...</li>
+            </ul>
+        </div>
+
+        <div class="poll-results" id="poll-results" style="display: none;">
+            <h2>Poll Results</h2>
+            <ul id="results-list">
+                <li>No results available.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let polls = [];
+        let currentPollIndex = -1;
+        let loggedIn = false;
+
+        function addOption() {
+            const optionsContainer = document.getElementById('options-container');
+            const optionInput = document.createElement('input');
+            optionInput.type = 'text';
+            optionInput.className = 'option-input';
+            optionInput.placeholder = `Option ${optionsContainer.childElementCount + 1}`;
+
+            const pollOption = document.createElement('div');
+            pollOption.className = 'poll-option';
+            pollOption.appendChild(optionInput);
+
+            optionsContainer.appendChild(pollOption);
+        }
+
+        function submitPoll() {
+            const questionInput = document.getElementById('question-input');
+            const optionInputs = document.getElementsByClassName('option-input');
+
+            const question = questionInput.value.trim();
+            const options = [];
+
+            for (const optionInput of optionInputs) {
+                const optionValue = optionInput.value.trim();
+                if (optionValue !== '') {
+                    options.push(optionValue);
+                }
+            }
+
+            if (question === '' || options.length < 2) {
+                alert('Please enter a valid question and at least two options.');
+                return;
+            }
+
+            const newPoll = {
+                question: question,
+                options: options,
+                votes: new Array(options.length).fill(0)
+            };
+
+            polls.push(newPoll);
+            questionInput.value = '';
+            optionInputs[0].value = '';
+            optionInputs[1].value = '';
+
+            showPollViewer(polls.length - 1);
+        }
+
+        function vote() {
+            const poll = polls[currentPollIndex];
+            const options = document.getElementsByClassName('poll-option');
+
+            for (let i = 0; i < options.length; i++) {
+                const option = options[i];
+                const checkbox = option.querySelector('input[type="radio"]');
+                if (checkbox.checked) {
+                    poll.votes[i]++;
+                    break;
+                }
+            }
+
+            showPollResults();
+        }
+
+        function login() {
+            const passwordInput = document.getElementById('staff-password');
+            const password = passwordInput.value;
+
+            if (password === '0eirgm-JWEG1$PoM') {
+                loggedIn = true;
+                passwordInput.value = '';
+                document.getElementById('staff-login').style.display = 'none';
+                document.getElementById('global-inbox').style.display = 'block';
+            } else {
+                alert('Invalid password. Please try again.');
+            }
+        }
+
+        function showPollViewer(index) {
+            currentPollIndex = index;
+            const pollViewer = document.getElementById('poll-viewer');
+            const pollQuestion = pollViewer.querySelector('.poll-question');
+            const pollOptions = pollViewer.querySelector('.poll-options');
+
+            const poll = polls[index];
+
+            pollQuestion.textContent = poll.question;
+
+            while (pollOptions.firstChild) {
+                pollOptions.firstChild.remove();
+            }
+
+            for (let i = 0; i < poll.options.length; i++) {
+                const option = poll.options[i];
+                const optionElement = document.createElement('div');
+                optionElement.className = 'poll-option';
+
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = 'poll-option';
+                input.value = i;
+
+                const label = document.createElement('label');
+                label.textContent = option;
+
+                optionElement.appendChild(input);
+                optionElement.appendChild(label);
+
+                pollOptions.appendChild(optionElement);
+            }
+
+            document.getElementById('poll-form').style.display = 'none';
+            pollViewer.style.display = 'block';
+        }
+
+        function showPollResults() {
+            const pollResults = document.getElementById('poll-results');
+            const resultsList = pollResults.querySelector('#results-list');
+            while (resultsList.firstChild) {
+                resultsList.firstChild.remove();
+            }
+
+            const poll = polls[currentPollIndex];
+            const totalVotes = poll.votes.reduce((a, b) => a + b, 0);
+
+            for (let i = 0; i < poll.options.length; i++) {
+                const option = poll.options[i];
+                const votes = poll.votes[i];
+                const percentage = totalVotes > 0 ? ((votes / totalVotes) * 100).toFixed(2) : 0;
+
+                const listItem = document.createElement('li');
+                listItem.textContent = `${option}: ${percentage}%`;
+
+                resultsList.appendChild(listItem);
+            }
+
+            document.getElementById('poll-viewer').style.display = 'none';
+            pollResults.style.display = 'block';
+        }
+
+        // Hide poll suggestions initially
+        document.getElementById('poll-form').style.display = 'none';
+
+        // Only show poll suggestions when the user is logged in
+        if (loggedIn) {
+            document.getElementById('poll-form').style.display = 'block';
+        } else {
+            document.getElementById('staff-login').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
