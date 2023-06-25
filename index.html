@@ -3,6 +3,14 @@
 <head>
     <title>Everybody Votes - Web</title>
     <style>
+        /* Reset default browser styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Apply custom styles */
         body {
             font-family: Arial, sans-serif;
             background-color: #F5F5F5;
@@ -19,6 +27,7 @@
 
         h1, h2 {
             text-align: center;
+            margin-bottom: 20px;
         }
 
         .poll {
@@ -30,194 +39,125 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        /* Rest of the CSS styles here */
+        .poll-question {
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
 
+        .poll-options {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .poll-option {
+            margin-bottom: 8px;
+        }
+
+        .poll-option input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #E0E0E0;
+            border-radius: 4px;
+        }
+
+        .poll-submit {
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        .poll-submit button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: #FFFFFF;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .poll-results {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            background-color: #FFFFFF;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .poll-results h2 {
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .poll-results ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .poll-results li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+            padding: 6px 10px;
+            border: 1px solid #E0E0E0;
+            border-radius: 4px;
+            background-color: #FAFAFA;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1, h2 {
+                font-size: 24px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Everybody Votes - Web</h1>
 
-        <div id="poll-form">
-            <h2>Create a New Poll</h2>
-            <input type="text" id="question-input" placeholder="Enter poll question">
-            <div id="options-container">
-                <div class="poll-option">
-                    <input type="text" class="option-input" placeholder="Option 1">
-                </div>
-                <div class="poll-option">
-                    <input type="text" class="option-input" placeholder="Option 2">
-                </div>
-            </div>
-            <button onclick="addOption()">Add Option</button>
-            <div class="poll-submit">
-                <button onclick="submitPoll()">Submit Poll</button>
-            </div>
-        </div>
-
-        <div id="poll-viewer" style="display: none;">
+        <div id="poll-form" class="poll">
             <h2>Poll Question</h2>
-            <div class="poll">
-                <p class="poll-question">Loading...</p>
-                <div class="poll-options">
-                    <p>Loading options...</p>
+            <div class="poll-options">
+                <div class="poll-option">
+                    <label for="option1">Option 1:</label>
+                    <input type="text" id="option1" name="option1">
                 </div>
-                <div class="poll-submit">
-                    <button onclick="vote()">Vote</button>
+                <div class="poll-option">
+                    <label for="option2">Option 2:</label>
+                    <input type="text" id="option2" name="option2">
                 </div>
+            </div>
+            <div class="poll-submit">
+                <button onclick="submitPoll()">Submit</button>
             </div>
         </div>
 
-        <div class="staff-login" id="staff-login" style="display: none;">
-            <input type="password" id="staff-password" placeholder="Enter staff password">
-            <button onclick="login()">Login</button>
-        </div>
-
-        <div class="global-inbox" id="global-inbox" style="display: none;">
-            <h2>Global Inbox</h2>
-            <ul id="inbox-list">
-                <li>Loading polls...</li>
-            </ul>
-        </div>
-
-        <div class="poll-results" id="poll-results" style="display: none;">
+        <div id="poll-results" class="poll-results">
             <h2>Poll Results</h2>
-            <ul id="results-list">
-                <li>No results available.</li>
-            </ul>
+            <ul id="results-list"></ul>
         </div>
     </div>
 
     <script>
-        let polls = [];
-        let currentPollIndex = -1;
-        let loggedIn = true;
-
-        function addOption() {
-            const optionsContainer = document.getElementById('options-container');
-            const optionInput = document.createElement('input');
-            optionInput.type = 'text';
-            optionInput.className = 'option-input';
-            optionInput.placeholder = 'Option ' + (optionsContainer.childElementCount + 1);
-            optionsContainer.appendChild(optionInput);
-        }
-
         function submitPoll() {
-            const questionInput = document.getElementById('question-input');
-            const optionInputs = document.getElementsByClassName('option-input');
+            const option1 = document.getElementById('option1').value;
+            const option2 = document.getElementById('option2').value;
 
-            if (questionInput.value.trim() === '') {
-                alert('Please enter a poll question.');
-                return;
-            }
+            // Process the submitted poll and update the results
+            // ...
 
-            const options = [];
-            for (let i = 0; i < optionInputs.length; i++) {
-                const optionInput = optionInputs[i];
-                if (optionInput.value.trim() !== '') {
-                    options.push(optionInput.value.trim());
-                }
-            }
-
-            if (options.length < 2) {
-                alert('Please enter at least two options for the poll.');
-                return;
-            }
-
-            const poll = {
-                question: questionInput.value.trim(),
-                options: options,
-                votes: new Array(options.length).fill(0)
-            };
-
-            polls.push(poll);
-
-            questionInput.value = '';
-            for (let i = 0; i < optionInputs.length; i++) {
-                optionInputs[i].value = '';
-            }
-
-            alert('Poll submitted successfully!');
-        }
-
-        function vote() {
-            const selectedOption = document.querySelector('input[name="option"]:checked');
-            if (selectedOption === null) {
-                alert('Please select an option to vote.');
-                return;
-            }
-
-            const poll = polls[currentPollIndex];
-            const optionIndex = parseInt(selectedOption.value);
-            poll.votes[optionIndex]++;
-
-            alert('Vote submitted successfully!');
-        }
-
-        function login() {
-            const staffPassword = document.getElementById('staff-password').value;
-
-            if (staffPassword.trim() === '') {
-                alert('Please enter the staff password.');
-                return;
-            }
-
-            // Perform staff login validation here
-            loggedIn = true;
-
-            document.getElementById('staff-login').style.display = 'none';
-            document.getElementById('poll-form').style.display = 'block';
-        }
-
-        function showPollViewer(index) {
-            currentPollIndex = index;
-
-            const pollViewer = document.getElementById('poll-viewer');
-            const pollQuestion = pollViewer.querySelector('.poll-question');
-            const pollOptions = pollViewer.querySelector('.poll-options');
-
-            const poll = polls[index];
-
-            pollQuestion.textContent = poll.question;
-
-            let optionsHTML = '';
-            for (let i = 0; i < poll.options.length; i++) {
-                optionsHTML += '<div class="poll-option">' +
-                    '<input type="radio" name="option" value="' + i + '">' +
-                    '<label>' + poll.options[i] + '</label>' +
-                    '</div>';
-            }
-            pollOptions.innerHTML = optionsHTML;
-
-            document.getElementById('poll-form').style.display = 'none';
-            pollViewer.style.display = 'block';
-        }
-
-        function showPollResults() {
-            const pollResults = document.getElementById('poll-results');
-            const resultsList = pollResults.querySelector('#results-list');
-
-            resultsList.innerHTML = '';
-
-            for (let i = 0; i < polls.length; i++) {
-                const poll = polls[i];
-
-                let resultHTML = '<li>' + poll.question + '</li>' +
-                    '<ul>';
-
-                for (let j = 0; j < poll.options.length; j++) {
-                    resultHTML += '<li>' + poll.options[j] + ': ' + poll.votes[j] + ' votes</li>';
-                }
-
-                resultHTML += '</ul>';
-
-                resultsList.innerHTML += resultHTML;
-            }
-
-            document.getElementById('poll-form').style.display = 'none';
-            document.getElementById('poll-viewer').style.display = 'none';
-            document.getElementById('global-inbox').style.display = 'none';
-            pollResults.style.display = 'block';
+            // Clear the input fields
+            document.getElementById('option1').value = '';
+            document.getElementById('option2').value = '';
         }
     </script>
 </body>
