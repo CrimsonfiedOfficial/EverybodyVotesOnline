@@ -40,6 +40,39 @@
     .poll-item {
       margin-bottom: 10px;
     }
+
+    .poll-card {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+
+    .poll-card h3 {
+      margin-top: 0;
+    }
+
+    .suggestion-form {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .suggestion-form label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .suggestion-form input[type="text"] {
+      padding: 5px;
+    }
+
+    .suggestion-form button {
+      padding: 5px 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
   </style>
   <script>
     function authenticate(event) {
@@ -71,57 +104,100 @@
 
     // Function to display poll suggestions
     function displayPollSuggestions() {
-      const pollSuggestionsList = document.getElementById('poll-suggestions-list');
-      pollSuggestionsList.innerHTML = '';
+      const pollSuggestionsContainer = document.getElementById('poll-suggestions-container');
+      pollSuggestionsContainer.innerHTML = '';
 
       pollSuggestions.forEach(poll => {
-        const listItem = document.createElement('li');
-        listItem.textContent = poll.question;
-        listItem.classList.add('poll-item');
-        pollSuggestionsList.appendChild(listItem);
+        const pollCard = document.createElement('div');
+        pollCard.classList.add('poll-card');
+
+        const pollTitle = document.createElement('h3');
+        pollTitle.textContent = poll.question;
+
+        const pollButton = document.createElement('button');
+        pollButton.textContent = 'Vote';
+
+        pollCard.appendChild(pollTitle);
+        pollCard.appendChild(pollButton);
+        pollSuggestionsContainer.appendChild(pollCard);
       });
     }
 
     // Function to display current polls
     function displayCurrentPolls() {
-      const pollsContainer = document.getElementById('polls-container');
-      pollsContainer.innerHTML = '';
+      const currentPollsContainer = document.getElementById('current-polls-container');
+      currentPollsContainer.innerHTML = '';
 
       currentPolls.forEach(poll => {
-        const pollItem = document.createElement('div');
-        pollItem.textContent = poll.question;
-        pollItem.classList.add('poll-item');
-        pollsContainer.appendChild(pollItem);
+        const pollCard = document.createElement('div');
+        pollCard.classList.add('poll-card');
+
+        const pollTitle = document.createElement('h3');
+        pollTitle.textContent = poll.question;
+
+        const pollButton = document.createElement('button');
+        pollButton.textContent = 'Vote';
+
+        pollCard.appendChild(pollTitle);
+        pollCard.appendChild(pollButton);
+        currentPollsContainer.appendChild(pollCard);
       });
     }
 
-    // Call the display functions
-    displayPollSuggestions();
-    displayCurrentPolls();
+    // Function to handle poll suggestion form submission
+    function submitPollSuggestion(event) {
+      event.preventDefault();
+      const suggestionInput = document.getElementById('suggestion-input');
+      const suggestion = suggestionInput.value;
+
+      // Add the suggestion to the poll suggestions array
+      pollSuggestions.push({ id: pollSuggestions.length + 1, question: suggestion });
+
+      // Clear the input field
+      suggestionInput.value = '';
+
+      // Refresh the poll suggestions
+      displayPollSuggestions();
+    }
+
+    // Initialize the page
+    function initializePage() {
+      displayPollSuggestions();
+      displayCurrentPolls();
+
+      const suggestionForm = document.getElementById('suggestion-form');
+      suggestionForm.addEventListener('submit', submitPollSuggestion);
+    }
+
+    // Run the initialization when the page loads
+    window.addEventListener('load', initializePage);
   </script>
 </head>
 <body>
   <h1>Everybody Votes</h1>
 
   <div id="content">
-    <div id="password-form">
-      <h2>Login</h2>
-      <form id="login-form" onsubmit="authenticate(event)">
-        <input type="password" id="password-input" placeholder="Enter Password" required>
-        <button type="submit">Login</button>
-      </form>
-    </div>
+    <form id="password-form" onsubmit="authenticate(event)">
+      <label for="password-input">Enter the password:</label>
+      <input type="password" id="password-input" required>
+      <button type="submit">Submit</button>
+    </form>
 
     <div id="private-content" style="display: none;">
-      <div id="poll-suggestions">
-        <h2>Poll Suggestions</h2>
-        <ul id="poll-suggestions-list"></ul>
+      <h2>Poll Suggestions</h2>
+      <ul id="poll-suggestions-container"></ul>
+
+      <div class="suggestion-form">
+        <h3>Submit a Poll Suggestion</h3>
+        <form id="suggestion-form" onsubmit="submitPollSuggestion(event)">
+          <label for="suggestion-input">Poll Question:</label>
+          <input type="text" id="suggestion-input" required>
+          <button type="submit">Submit</button>
+        </form>
       </div>
 
-      <div id="current-polls">
-        <h2>Current Polls</h2>
-        <div id="polls-container"></div>
-      </div>
+      <h2>Current Polls</h2>
+      <ul id="current-polls-container"></ul>
     </div>
   </div>
 </body>
