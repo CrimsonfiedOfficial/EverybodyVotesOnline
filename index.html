@@ -1,139 +1,128 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Main Website</title>
+  <title>Everybody Votes</title>
   <style>
+    /* Add your custom styles here */
     body {
-      text-align: center;
       font-family: Arial, sans-serif;
-    }
-
-    .poll-suggestions {
-      margin-top: 50px;
-    }
-
-    .poll-suggestions h2 {
-      font-size: 24px;
-    }
-
-    .poll-suggestions ul {
-      list-style-type: none;
+      margin: 0;
       padding: 0;
     }
 
-    .poll-suggestions li {
+    h1 {
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    #content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #password-form {
+      text-align: center;
+    }
+
+    #poll-suggestions,
+    #current-polls {
+      margin-top: 20px;
+    }
+
+    #poll-suggestions-list,
+    #polls-container {
+      list-style: none;
+      padding: 0;
+    }
+
+    .poll-item {
       margin-bottom: 10px;
     }
-
-    .poll-suggestions .poll-title {
-      font-weight: bold;
-    }
-
-    .poll-suggestions .poll-description {
-      color: #888;
-    }
-
-    .poll-suggestions .poll-buttons {
-      margin-top: 10px;
-    }
-
-    .poll-suggestions .poll-buttons button {
-      padding: 5px 10px;
-      background-color: #4CAF50;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-    }
   </style>
-</head>
-<body>
-  <h1>Main Website</h1>
-
-  <!-- Password Login Form -->
-  <div id="password-form">
-    <h2>Login</h2>
-    <form onsubmit="validatePassword(event)">
-      <input type="password" id="password-input" placeholder="Enter password" required>
-      <br>
-      <button type="submit">Submit</button>
-    </form>
-  </div>
-
-  <!-- Poll Suggestions Section -->
-  <div id="poll-suggestions" style="display: none;">
-    <h2>Poll Suggestions</h2>
-    <ul id="poll-list"></ul>
-  </div>
-
-  <!-- JavaScript Code -->
   <script>
-    // Password Validation Function
-    function validatePassword(event) {
+    function authenticate(event) {
       event.preventDefault();
-      var password = document.getElementById("password-input").value;
-      if (password === "0eirgm-JWEG1$PoM") {
-        // Password is correct, show the poll suggestions section
-        document.getElementById("password-form").style.display = "none";
-        document.getElementById("poll-suggestions").style.display = "block";
-        loadPollSuggestions();
-      } else {
-        // Password is incorrect, display error message
-        alert("Invalid password. Please try again.");
+      const passwordInput = document.getElementById('password-input');
+      const password = passwordInput.value;
+
+      // Replace with your actual password
+      const correctPassword = '0eirgm-JWEG1$PoM';
+
+      if (password === correctPassword) {
+        document.getElementById('password-form').style.display = 'none';
+        document.getElementById('private-content').style.display = 'block';
       }
     }
 
-    // Load Poll Suggestions
-    function loadPollSuggestions() {
-      // Simulated poll suggestions data
-      var pollSuggestions = [
-        {
-          title: "Poll 1",
-          description: "Description for Poll 1"
-        },
-        {
-          title: "Poll 2",
-          description: "Description for Poll 2"
-        },
-        {
-          title: "Poll 3",
-          description: "Description for Poll 3"
-        }
-      ];
+    // Example poll data
+    const pollSuggestions = [
+      { id: 1, question: 'What is your favorite color?' },
+      { id: 2, question: 'Which is your favorite movie?' },
+      { id: 3, question: 'What is your preferred programming language?' }
+    ];
 
-      var pollList = document.getElementById("poll-list");
-      pollSuggestions.forEach(function(poll) {
-        var li = document.createElement("li");
-        li.innerHTML = "<span class='poll-title'>" + poll.title + "</span><br>" +
-          "<span class='poll-description'>" + poll.description + "</span><br>" +
-          "<div class='poll-buttons'>" +
-          "<button onclick='approvePoll()'>Approve</button>" +
-          "<button onclick='declinePoll()'>Decline</button>" +
-          "</div>";
-        pollList.appendChild(li);
+    const currentPolls = [
+      { id: 1, question: 'Do you prefer dogs or cats?' },
+      { id: 2, question: 'What is your favorite food?' },
+      { id: 3, question: 'Are you an early bird or a night owl?' }
+    ];
+
+    // Function to display poll suggestions
+    function displayPollSuggestions() {
+      const pollSuggestionsList = document.getElementById('poll-suggestions-list');
+      pollSuggestionsList.innerHTML = '';
+
+      pollSuggestions.forEach(poll => {
+        const listItem = document.createElement('li');
+        listItem.textContent = poll.question;
+        listItem.classList.add('poll-item');
+        pollSuggestionsList.appendChild(listItem);
       });
     }
 
-    // Poll Approval Function
-    function approvePoll() {
-      // Logic for approving the poll
-      alert("Poll approved.");
-      // Remove the current poll from the list and load the next poll
-      var pollList = document.getElementById("poll-list");
-      if (pollList.firstChild) {
-        pollList.firstChild.remove();
-      }
+    // Function to display current polls
+    function displayCurrentPolls() {
+      const pollsContainer = document.getElementById('polls-container');
+      pollsContainer.innerHTML = '';
+
+      currentPolls.forEach(poll => {
+        const pollItem = document.createElement('div');
+        pollItem.textContent = poll.question;
+        pollItem.classList.add('poll-item');
+        pollsContainer.appendChild(pollItem);
+      });
     }
 
-    // Poll Decline Function
-    function declinePoll() {
-      // Logic for declining the poll
-      alert("Poll declined.");
-      // Remove the current poll from the list and load the next poll
-      var pollList = document.getElementById("poll-list");
-      if (pollList.firstChild) {
-        pollList.firstChild.remove();
-      }
-    }
+    // Call the display functions
+    displayPollSuggestions();
+    displayCurrentPolls();
   </script>
+</head>
+<body>
+  <h1>Everybody Votes</h1>
+
+  <div id="content">
+    <div id="password-form">
+      <h2>Login</h2>
+      <form id="login-form" onsubmit="authenticate(event)">
+        <input type="password" id="password-input" placeholder="Enter Password" required>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+
+    <div id="private-content" style="display: none;">
+      <div id="poll-suggestions">
+        <h2>Poll Suggestions</h2>
+        <ul id="poll-suggestions-list"></ul>
+      </div>
+
+      <div id="current-polls">
+        <h2>Current Polls</h2>
+        <div id="polls-container"></div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
