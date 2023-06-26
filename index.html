@@ -1,206 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Everybody Votes</title>
-  <style>
-    /* Add your custom styles here */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-
-    h1 {
-      text-align: center;
-      margin-top: 50px;
-    }
-
-    #content {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    #password-form {
-      text-align: center;
-    }
-
-    #poll-suggestions,
-    #current-polls {
-      margin-top: 20px;
-    }
-
-    #poll-suggestions-list,
-    #polls-container {
-      list-style: none;
-      padding: 0;
-    }
-
-    .poll-item {
-      margin-bottom: 10px;
-    }
-
-    .poll-card {
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 10px;
-      margin-bottom: 20px;
-    }
-
-    .poll-card h3 {
-      margin-top: 0;
-    }
-
-    .suggestion-form {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .suggestion-form label {
-      display: block;
-      margin-bottom: 10px;
-    }
-
-    .suggestion-form input[type="text"] {
-      padding: 5px;
-    }
-
-    .suggestion-form button {
-      padding: 5px 10px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-  </style>
-  <script>
-    function authenticate(event) {
-      event.preventDefault();
-      const passwordInput = document.getElementById('password-input');
-      const password = passwordInput.value;
-
-      // Replace with your actual password
-      const correctPassword = '0eirgm-JWEG1$PoM';
-
-      if (password === correctPassword) {
-        window.location.href = 'private.html';
-      }
-    }
-
-    // Function to handle poll suggestion form submission
-    function submitPollSuggestion(event) {
-      event.preventDefault();
-      const suggestionInput = document.getElementById('suggestion-input');
-      const suggestion = suggestionInput.value;
-
-      // You can implement the logic to save the poll suggestion here
-
-      // Clear the input field
-      suggestionInput.value = '';
-    }
-
-    // Initialize the page
-    function initializePage() {
-      const suggestionForm = document.getElementById('suggestion-form');
-      suggestionForm.addEventListener('submit', submitPollSuggestion);
-    }
-
-    // Run the initialization when the page loads
-    window.addEventListener('load', initializePage);
-  </script>
+  <title>Main Website</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-  <h1>Everybody Votes</h1>
-
-  <div id="content">
-    <form id="password-form" onsubmit="authenticate(event)">
-      <label for="password-input">Enter the password:</label>
-      <input type="password" id="password-input" required>
-      <button type="submit">Submit</button>
-    </form>
+  <h1>Welcome to the Main Website</h1>
+  
+  <!-- Add the poll suggestions container -->
+  <div id="pollSuggestionsContainer">
+    <h2>Poll Suggestions</h2>
+    <ul id="pollSuggestions"></ul>
   </div>
 
-  <div id="private-content" style="display: none;">
-    <div class="suggestion-form">
-      <h3>Submit a Poll Suggestion</h3>
-      <form id="suggestion-form" onsubmit="submitPollSuggestion(event)">
-        <label for="suggestion-input">Poll Question:</label>
-        <input type="text" id="suggestion-input" required>
-        <button type="submit">Submit</button>
-      </form>
-    </div>
-
-    <div id="poll-suggestions">
-      <h3>Poll Suggestions</h3>
-      <ul id="poll-suggestions-list"></ul>
-    </div>
-
-    <div id="current-polls">
-      <h3>Current Polls</h3>
-      <div id="polls-container"></div>
-    </div>
+  <!-- Add the current poll container -->
+  <div id="currentPollContainer">
+    <h2>Current Poll</h2>
+    <div id="currentPollQuestion"></div>
+    <ul id="currentPollOptions"></ul>
   </div>
 
-  <script>
-    // Function to display poll suggestions
-    function displayPollSuggestions(suggestions) {
-      const suggestionList = document.getElementById('poll-suggestions-list');
-
-      // Clear previous suggestions
-      suggestionList.innerHTML = '';
-
-      // Display each suggestion as a list item
-      suggestions.forEach(function(suggestion) {
-        const listItem = document.createElement('li');
-        listItem.textContent = suggestion.question;
-        listItem.classList.add('poll-item');
-        suggestionList.appendChild(listItem);
-      });
-    }
-
-    // Function to display current polls
-    function displayCurrentPolls(polls) {
-      const pollsContainer = document.getElementById('polls-container');
-
-      // Clear previous polls
-      pollsContainer.innerHTML = '';
-
-      // Display each poll as a card
-      polls.forEach(function(poll) {
-        const pollCard = document.createElement('div');
-        pollCard.classList.add('poll-card');
-
-        const pollQuestion = document.createElement('h3');
-        pollQuestion.textContent = poll.question;
-
-        pollCard.appendChild(pollQuestion);
-        pollsContainer.appendChild(pollCard);
-      });
-    }
-
-    // Example poll data
-    const pollSuggestions = [
-      { id: 1, question: 'What is your favorite color?' },
-      { id: 2, question: 'Which is your favorite movie?' },
-      { id: 3, question: 'What is your preferred programming language?' }
-    ];
-
-    const currentPolls = [
-      { id: 1, question: 'Do you prefer dogs or cats?' },
-      { id: 2, question: 'What is your favorite food?' },
-      { id: 3, question: 'Are you an early bird or a night owl?' }
-    ];
-
-    // Run the code when the private page is accessed
-    if (window.location.href.includes('private.html')) {
-      document.getElementById('content').style.display = 'none';
-      document.getElementById('private-content').style.display = 'block';
-
-      // Display the poll suggestions and current polls
-      displayPollSuggestions(pollSuggestions);
-      displayCurrentPolls(currentPolls);
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
